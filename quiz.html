@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Preference Test</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="gradient-bg">
+
+<div class="result-card">
+
+<h1><b>Preference Assessment</b></h1>
+
+<form method="POST">
+
+    <ol>
+
+    {% for q in questions %}
+
+        <li>
+
+            <!-- SHOW QUESTION TEXT -->
+            <p class="question-text">
+                <b>{{ q.text }}</b>
+            </p>
+
+            <!-- SHOW OPTIONS -->
+            {% for key, value in q.options.items() %}
+
+                <label>
+                    <input type="radio"
+                           name="q{{ q.id }}"
+                           value="{{ key }}"
+                           required>
+
+                    {{ value }}
+                </label>
+
+                <br>
+
+            {% endfor %}
+
+            <br>
+
+        </li>
+
+    {% endfor %}
+
+    </ol>
+
+    <button type="submit" class="btn-gradient">
+        Submit Assessment
+    </button>
+
+</form>
+
+</div>
+
+</body>
+</html>

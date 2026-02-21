@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Assessment Result</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="gradient-bg">
+
+<div class="result-card">
+
+    <!-- Heading -->
+    <h1><b>Hello {{ name }}</b></h1>
+
+    <h2><b>Learning Mode: {{ learner_type }} Learner</b></h2>
+
+    <h3><b>Primary Preference: {{ dominant }}</b></h3>
+
+    <p><b>Recommended Course Type: {{ recommended }}</b></p>
+
+
+    <!-- Score Summary -->
+    <div class="score-box">
+
+        <h3><b>Score Summary</b></h3>
+
+        <ul>
+
+            {% set total = scores.values() | sum %}
+
+            {% for key, value in scores.items() %}
+
+            <li>
+                <b>
+                {{ key }} :
+                {{ value }}
+                ({{ ((value / total) * 100) | round(1) }}%)
+                </b>
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+
+    <!-- Preference Graph -->
+    <div class="score-box">
+
+        <h3><b>Preference Graph</b></h3>
+
+        <canvas id="preferenceChart"></canvas>
+
+    </div>
+
+
+    <!-- AI Resources -->
+    <div class="resource-box">
+
+        <h3><b>AI Recommended Resources</b></h3>
+
+        {% if resources %}
+
+            {% for resource in resources %}
+
+            <a href="{{ resource.url }}" target="_blank" class="btn-gradient">
+                {{ resource.title }}
+            </a>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No resources available</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Back Button -->
+    <div class="button-container">
+
+        <a href="{{ url_for('home') }}" class="btn-outline">
+            Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- Chart Script -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx = document.getElementById('preferenceChart').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+
+    gradient.addColorStop(0, "#ff5f7e");
+    gradient.addColorStop(1, "#7b5cff");
+
+    new Chart(ctx, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: ['Visual', 'Auditory', 'Reading', 'Kinesthetic'],
+
+            datasets: [{
+
+                label: 'Preference Score',
+
+                data: [
+                    {{ scores["Visual"] }},
+                    {{ scores["Auditory"] }},
+                    {{ scores["Reading"] }},
+                    {{ scores["Kinesthetic"] }}
+                ],
+
+                backgroundColor: gradient,
+
+                borderRadius: 12
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+                        stepSize: 1
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+
+</body>
+</html>
